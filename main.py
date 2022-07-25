@@ -258,6 +258,23 @@ feed_dict = {}
 #
 ###########################################################
 
+def fix_feed_type(value):
+    try:
+        if isinstance(value, tf.Tensor):
+            if value.dtype == np.int32 or tf.int32:
+                return tf.cast(value, tf.int64)
+            else:
+                return value
+        elif isinstance(value, np.ndarray):
+            if value.dtype == np.int32 or tf.int32:
+                return value.astype(np.int64)
+            else:
+                return value
+        else:
+            return value
+    except:
+        return value
+
 print("Train model")
 for epoch in range(FLAGS.epochs):
 
@@ -272,6 +289,10 @@ for epoch in range(FLAGS.epochs):
             placeholders=placeholders)
 
         t = time.time()
+
+        # Fix types
+        opt.batch_edge_type_idx = fix_feed_type(opt.batch_edge_type_idx)
+        feed_dict={k:fix_feed_type(v) for k,v in feed_dict.items()}
 
         # Training step: run single weight update
         outs = sess.run([opt.opt_op, opt.cost, opt.batch_edge_type_idx], feed_dict=feed_dict)

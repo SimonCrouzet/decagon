@@ -137,7 +137,7 @@ def gather_cols(params, indices, name=None):
     Returns:
         A 2D Tensor. Has the same type as ``params``.
     """
-    with tf.op_scope([params, indices], name, "gather_cols") as scope:
+    with tf.name_scope(name, "gather_cols", [params, indices]) as scope:
         # Check input
         params = tf.convert_to_tensor(params, name="params")
         indices = tf.convert_to_tensor(indices, name="indices")
