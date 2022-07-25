@@ -117,12 +117,17 @@ val_test_size = 0.05
 n_genes = 500
 n_drugs = 400
 n_drugdrug_rel_types = 3
-gene_net = nx.planted_partition_graph(50, 10, 0.2, 0.05, seed=42)
+# Dummy example
+# gene_net = nx.planted_partition_graph(50, 10, 0.2, 0.05, seed=42)
+# gene_drug_adj = sp.csr_matrix((10 * np.random.randn(n_genes, n_drugs) > 15).astype(int))
+
+# Real-world example from original publication
+gene_net = nx.read_adjlist(os.path.join('data', 'bio-decagon-ppi.csv'))
+gene_drug_adj = sp.csr_matrix(np.fromfile(os.path.join('data', 'bio-decagon-targets-all.csv')))
 
 gene_adj = nx.adjacency_matrix(gene_net)
 gene_degrees = np.array(gene_adj.sum(axis=0)).squeeze()
 
-gene_drug_adj = sp.csr_matrix((10 * np.random.randn(n_genes, n_drugs) > 15).astype(int))
 drug_gene_adj = gene_drug_adj.transpose(copy=True)
 
 drug_drug_adj_list = []
